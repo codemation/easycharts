@@ -31,6 +31,6 @@ jobs:
         env: # Or as an environment variable
           PYPI: ${{ secrets.PYPI }}
         run: |
-          export NEXTVERSION=$(pip -qqq download easycharts && ls easycharts*.whl | sed 's/-/" "/g' | awk '{print "(" $2 ")"}' |  python nextbuild.py) 
+          export NEXTVERSION=0.1 
           export PYQL_PACKAGE=$(pwd)/dist/easycharts-$NEXTVERSION-py3-none-any.whl
           python -m twine upload $(pwd)/dist/easycharts-$NEXTVERSION-py3-none-any.whl -u codemation -p $PYPI
