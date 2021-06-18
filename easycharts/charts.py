@@ -1,5 +1,8 @@
 import asyncio
 import time, uuid, os
+from enum import Enum
+from typing import Optional
+
 from pydantic import BaseModel
 from fastapi import Response
 from fastapi.responses import HTMLResponse
@@ -13,6 +16,9 @@ from easycharts.exceptions import (
 )
 from easycharts.frontend import get_chart_body, get_chart_page
 
+class ChartType(str, Enum):
+    bar = 'bar'
+    line = 'line'
 
 class ChartServer:
     def __init__(self,
@@ -46,7 +52,12 @@ class ChartServer:
         )
 
         @server.get(chart_prefix + '/{chart}', response_class=HTMLResponse, tags=['charts'])
-        async def view_chart_html(chart: str, extra: str = None, body_only: bool = False):
+        async def view_chart_html(
+            chart: str, 
+            extra: str = None, 
+            type: ChartType = ChartType.line,
+            body_only: bool = False
+        ):
             charts = [chart]
             if extra:
                 charts.append(extra)
@@ -113,7 +124,7 @@ class ChartServer:
                 "name": chart_id,
                 "names": names,
                 "action": "create_chart",
-                "type": "line",
+                "type": "bar",
                 "datasets": datasets
             }
 

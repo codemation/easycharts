@@ -52,8 +52,14 @@ In a separate window, access the OpenAPI docs to demonstrate dynanimc updates to
 http://0.0.0.0:8220/docs
 ```
 
-![](images/get-started-update.png) ![](images/get-started-test-1.png)
+![](images/get-started-update.png) 
 
+## Line
+![](images/get-started-test-1.png)
+
+
+## Bar
+![](images/get-started-test-1-bar.png)
 
 ## APIS
 
