@@ -62,7 +62,7 @@ http://0.0.0.0:8220/docs
 ## Real World Usage - Resource Monitoring
 
 
-```
+```python
 import asyncio
 import datetime, psutil
 from fastapi import FastAPI
