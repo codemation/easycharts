@@ -21,7 +21,7 @@ jobs:
 
       - name: Package & Test PyPI Installation
         run: |
-          export NEXTVERSION=$(pip -qqq download easycharts && ls easycharts*.whl | sed 's/-/" "/g' | awk '{print "(" $2 ")"}' |  python nextbuild.py)
+          export NEXTVERSION=0.1 
           sed -i 's/NEXTVERSION/'$NEXTVERSION'/g' setup.py
           python setup.py bdist_wheel
           export PYQL_PACKAGE=$(pwd)/dist/easycharts-$NEXTVERSION-py3-none-any.whl
