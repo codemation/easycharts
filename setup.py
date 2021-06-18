@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 setuptools.setup(
      name='easycharts',  
-     version='0.01',
+     version='NEXTVERSION',
      packages=setuptools.find_packages(include=['easycharts'], exclude=['build']),
      author="Joshua Jamison",
      author_email="joshjamison1@gmail.com",
