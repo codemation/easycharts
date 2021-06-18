@@ -2,6 +2,7 @@ import setuptools
 
 BASE_REQUIREMENTS = [
  'easyrpc>=0.241',
+ 'aiopyql>=0.359'
 ]
 
 with open("README.md", "r") as fh:

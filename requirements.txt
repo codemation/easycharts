@@ -1,1 +1,2 @@
-easyrpc
+easyrpc>=0.241
+aiopyql>=0.359
