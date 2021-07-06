@@ -8,9 +8,7 @@ Easily create data visualization of static or streaming data
 ## Get Started
 
 ```python
-
 pip install easycharts
-
 ```
 
 ## Create EasyCharts Server
@@ -18,7 +16,7 @@ pip install easycharts
 ```python
 # charts.py
 from fastapi import FastAPI
-from easycharts.charts import ChartServer
+from easycharts import ChartServer
 
 server = FastAPI()
 
@@ -26,7 +24,7 @@ server = FastAPI()
 async def setup():
     server.charts = await ChartServer.create(
         server,
-        "test"
+        charts_db="test"
     )
 
     await server.charts.create_dataset(
@@ -69,18 +67,23 @@ http://0.0.0.0:8220/docs
 
 
 ```python
-import asyncio
 import datetime, psutil
+import asyncio
 from fastapi import FastAPI
-from easycharts.charts import ChartServer
+from easycharts import ChartServer
+from easyschedule import EasyScheduler
 
+scheduler = EasyScheduler()
 server = FastAPI()
+
+every_minute = '* * * * *'
 
 @server.on_event('startup')
 async def setup():
+    asyncio.create_task(scheduler.start())
     server.charts = await ChartServer.create(
         server,
-        "test",
+        charts_db="charts_database",
         chart_prefix = '/mycharts'
     )
 
@@ -103,28 +106,21 @@ async def setup():
         dataset=[psutil.virtual_memory().percent]
     )
 
-    # create resource monitoring task 
+    @scheduler(schedule=every_minute)
     async def resource_monitor():
-        while True:
-            try:
-                await asyncio.sleep(30)
+        time_now=datetime.datetime.now().isoformat()[11:19]
 
-                time_now=datetime.datetime.now().isoformat()[11:19]
-
-                # updates CPU & MEM datasets with current time
-                await server.charts.update_dataset(
-                    'cpu',
-                    label=time_now,
-                    data=psutil.cpu_percent()
-                )
-                await server.charts.update_dataset(
-                    'mem',
-                    label=time_now,
-                    data=psutil.virtual_memory().percent
-                )
-            except Exception:
-                break
-    asyncio.create_task(resource_monitor())
+        # updates CPU & MEM datasets with current time
+        await server.charts.update_dataset(
+            'cpu',
+            label=time_now,
+            data=psutil.cpu_percent()
+        )
+        await server.charts.update_dataset(
+            'mem',
+            label=time_now,
+            data=psutil.virtual_memory().percent
+        )
 ```
 
 ![](images/resource-mon.png)

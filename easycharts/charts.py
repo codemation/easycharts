@@ -32,7 +32,7 @@ class ChartServer:
     @classmethod
     async def create(cls,
         server,
-        name: str,
+        charts_db: str,
         chart_prefix = '/chart'
     ):
         rpc_server = EasyRpcServer(
@@ -42,7 +42,7 @@ class ChartServer:
         )
 
         charts_db = await Database.create(
-            database=f"{name}.db",
+            database=f"{charts_db}.db",
             cache_enabled=True
         )
 
@@ -55,15 +55,15 @@ class ChartServer:
         async def view_chart_html(
             chart: str, 
             extra: str = None, 
-            type: ChartType = ChartType.line,
+            chart_type: ChartType = ChartType.line,
             body_only: bool = False
         ):
             charts = [chart]
             if extra:
                 charts.append(extra)
             if not body_only:
-                return await chart_server.get_chart_page(charts)
-            return await chart_server.get_chart_body(charts)
+                return await chart_server.get_chart_page(charts, chart_type=chart_type)
+            return await chart_server.get_chart_body(charts, chart_type=chart_type)
 
         @server.post(chart_prefix + '/{chart}', tags=['charts'])
         async def update_chart(chart: str , label: str, data: str):
@@ -101,7 +101,7 @@ class ChartServer:
 
         # create default rpc_server methods
         @rpc_server.origin(namespace='easycharts')
-        async def create_chart(names: list):
+        async def create_chart(names: list, chart_type='line'):
             for name in names:
                 if not name in chart_server.db.tables:
                     raise MissingDatasetError(name)
@@ -124,7 +124,7 @@ class ChartServer:
                 "name": chart_id,
                 "names": names,
                 "action": "create_chart",
-                "type": "bar",
+                "type": chart_type,
                 "datasets": datasets
             }
 
@@ -222,7 +222,7 @@ class ChartServer:
             }
         )
         return creds
-    async def get_chart_page(self, name):
-        return get_chart_page(name, self.get_credentials())
-    async def get_chart_body(self, name):
-        return get_chart_body(name, self.get_credentials())
+    async def get_chart_page(self, name, chart_type='line'):
+        return get_chart_page(name, self.get_credentials(), chart_type=chart_type)
+    async def get_chart_body(self, name, chart_type='line'):
+        return get_chart_body(name, self.get_credentials(), chart_type=chart_type)

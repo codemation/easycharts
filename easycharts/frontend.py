@@ -1,4 +1,4 @@
-def get_chart_body(names: list, creds):
+def get_chart_body(names: list, creds: str, chart_type: str):
     names_joined = '__and__'.join(names)
     names = [f'"{name}"' for name in names ]
     names_csv = ', '.join(names)
@@ -114,7 +114,7 @@ def get_chart_body(names: list, creds):
         }}
         var makeChart = function(names){{
             console.log(names);
-            let namesJson = JSON.stringify({{'names': names}});
+            let namesJson = JSON.stringify({{'names': names, 'chart_type': '{chart_type}'}});
             let requestId = uuidv4();
             var getData = '{{"ws_action": {{"type": "request", "response_expected": true, "request": {{"action": "create_chart", "args": [], "kwargs": ' + namesJson + ' }}, "request_id": "' + requestId + '"}}}}';
             socket.send(getData)
@@ -145,8 +145,8 @@ def get_chart_body(names: list, creds):
 </html>
 """
 
-def get_chart_page(names: list, creds):
-    chart_body = get_chart_body(names, creds)
+def get_chart_page(names: list, creds: str, chart_type: str):
+    chart_body = get_chart_body(names, creds, chart_type=chart_type)
     return f"""
 <html>
     <head>
