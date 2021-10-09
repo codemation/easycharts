@@ -218,7 +218,8 @@ class ChartServer:
             **{
                 "type":"PROXY",
                 "id": str(uuid.uuid1()),
-                "namespace":"easycharts"
+                "namespace":"easycharts",
+                "serialization": "json"
             }
         )
         return creds
