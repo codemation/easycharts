@@ -1,8 +1,8 @@
-name: Package
+name: Package and Push to PyPI
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "*"
 jobs:
   package:
     name: Package easycharts for PyPI
